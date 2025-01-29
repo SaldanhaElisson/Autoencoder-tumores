@@ -1,13 +1,13 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from keras.src.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, Dense, Flatten, BatchNormalization, Dropout
 from keras.src.models import Model
 from keras.src.optimizers import Adam
 from keras.src.utils import to_categorical
-from sklearn.metrics import precision_score, recall_score, f1_score
 import os
-
 from load_images import load_and_augment_images
+import matplotlib.pyplot as plt
+from sklearn.model_selection import KFold
+from sklearn.metrics import precision_score, recall_score, f1_score
 
 print("Carregando e aumentando as imagens...")
 base_path = os.path.join(os.getcwd(), 'data_base')
@@ -72,11 +72,6 @@ autoencoder.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentro
 print("Modelo do autoencoder construído e compilado com sucesso.")
 
 
-print("Treinando o autoencoder...")
-history_autoencoder = autoencoder.fit(x_train, x_train, epochs=100, batch_size=16, shuffle=True, validation_data=(x_test, x_test))
-print("Autoencoder treinado com sucesso.")
-
-
 print("Construindo o modelo do classificador...")
 encoder = Model(inputs=input_img, outputs=autoencoder.get_layer('conv2d_5').output)
 
@@ -96,40 +91,88 @@ classifier.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crosse
 print("Modelo do classificador construído e compilado com sucesso.")
 
 
-print("Treinando o classificador...")
-history_classifier = classifier.fit(encoder.predict(x_train), y_train, epochs=100, batch_size=16, shuffle=True, validation_data=(encoder.predict(x_test), y_test))
-print("Classificador treinado com sucesso.")
+x_combined = np.concatenate((x_train, x_test), axis=0)
+y_combined = np.concatenate((y_train, y_test), axis=0)
 
-print("Avaliando o classificador...")
-y_pred = classifier.predict(encoder.predict(x_test))
-y_pred_class = np.argmax(y_pred, axis=1)
+k = 5
+kf = KFold(n_splits=k, shuffle=True, random_state=42)
+epochas_in = 100
+batch_size_in = 16
 
-y_test_class = np.argmax(y_test, axis=1)
+precision_scores = []
+recall_scores = []
+f1_scores = []
+autoencoder_histories = []
+classifier_histories = []
 
-precision = precision_score(y_test_class, y_pred_class, average='macro')
-recall = recall_score(y_test_class, y_pred_class, average='macro')
-sensitividade = recall_score(y_test_class, y_pred_class, average='macro')
-f_measure = f1_score(y_test_class, y_pred_class, average='macro')
+for k_round, (train_index, val_index) in enumerate(kf.split(x_combined)):
+    print(f"K round: {k_round + 1}")
+    x_train_fold, x_val_fold = x_combined[train_index], x_combined[val_index]
+    y_train_fold, y_val_fold = y_combined[train_index], y_combined[val_index]
 
-print("Precision:", precision)
-print("Recall:", recall)
-print("Sensitividade:", sensitividade)
-print("F-measure:", f_measure)
+    print("Treinando o autoencoder...")
+    history_autoencoder = autoencoder.fit(
+        x_train_fold, x_train_fold,
+        epochs=epochas_in, batch_size=batch_size_in, shuffle=True,
+        validation_data=(x_val_fold, x_val_fold)
+    )
 
-# Plotar as curvas de aprendizagem
-print("Plotando as curvas de aprendizagem...")
+    autoencoder_histories.append(history_autoencoder)
+    print("Autoencoder treinado com sucesso.")
+
+    print("Treinando o classificador...")
+    history_classifier = classifier.fit(
+        encoder.predict(x_train_fold), y_train_fold,
+        epochs=epochas_in, batch_size=batch_size_in, shuffle=True,
+        validation_data=(encoder.predict(x_val_fold), y_val_fold)
+    )
+    classifier_histories.append(history_classifier)
+    print("Classificador treinado com sucesso.")
+
+    print("Avaliando o classificador...")
+    y_pred = classifier.predict(encoder.predict(x_val_fold))
+    y_pred_class = np.argmax(y_pred, axis=1)
+    y_val_class = np.argmax(y_val_fold, axis=1)
+
+    precision = precision_score(y_val_class, y_pred_class, average='macro')
+    recall = recall_score(y_val_class, y_pred_class, average='macro')
+    f1 = f1_score(y_val_class, y_pred_class, average='macro')
+
+    precision_scores.append(precision)
+    recall_scores.append(recall)
+    f1_scores.append(f1)
+
+    print("Métricas:")
+    print(f"Precision: {precision}, Recall: {recall}, F1-score: {f1}")
+
+mean_precision = np.mean(precision_scores)
+mean_recall = np.mean(recall_scores)
+mean_f1 = np.mean(f1_scores)
+
+print("\nMétricas finais:")
+print(f"Precision média: {mean_precision}")
+print(f"Recall médio: {mean_recall}")
+print(f"F1-score médio: {mean_f1}")
+
+mean_autoencoder_loss = np.mean([h.history['loss'] for h in autoencoder_histories], axis=0)
+mean_autoencoder_val_loss = np.mean([h.history['val_loss'] for h in autoencoder_histories], axis=0)
+
+mean_classifier_loss = np.mean([h.history['loss'] for h in classifier_histories], axis=0)
+mean_classifier_val_loss = np.mean([h.history['val_loss'] for h in classifier_histories], axis=0)
+
 plt.figure(figsize=(12, 6))
+
 plt.subplot(1, 2, 1)
-plt.plot(history_autoencoder.history['loss'], label='Loss Treinamento')
-plt.plot(history_autoencoder.history['val_loss'], label='Loss Validação')
+plt.plot(mean_autoencoder_loss, label='Loss Treinamento')
+plt.plot(mean_autoencoder_val_loss, label='Loss Validação')
 plt.title('Curva de Aprendizagem do Autoencoder')
 plt.xlabel('Épocas')
 plt.ylabel('Loss')
 plt.legend()
 
 plt.subplot(1, 2, 2)
-plt.plot(history_classifier.history['loss'], label='Loss Treinamento')
-plt.plot(history_classifier.history['val_loss'], label='Loss Validação')
+plt.plot(mean_classifier_loss, label='Loss Treinamento')
+plt.plot(mean_classifier_val_loss, label='Loss Validação')
 plt.title('Curva de Aprendizagem do Classificador')
 plt.xlabel('Épocas')
 plt.ylabel('Loss')
