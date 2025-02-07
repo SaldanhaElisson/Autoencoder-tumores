@@ -94,9 +94,9 @@ print("Modelo do classificador construído e compilado com sucesso.")
 x_combined = np.concatenate((x_train, x_test), axis=0)
 y_combined = np.concatenate((y_train, y_test), axis=0)
 
-k = 5
+k = 3
 kf = KFold(n_splits=k, shuffle=True, random_state=42)
-epochas_in = 100
+epochas_in = 10
 batch_size_in = 16
 
 precision_scores = []
@@ -145,6 +145,7 @@ for k_round, (train_index, val_index) in enumerate(kf.split(x_combined)):
     print("Métricas:")
     print(f"Precision: {precision}, Recall: {recall}, F1-score: {f1}")
 
+
 mean_precision = np.mean(precision_scores)
 mean_recall = np.mean(recall_scores)
 mean_f1 = np.mean(f1_scores)
@@ -153,6 +154,19 @@ print("\nMétricas finais:")
 print(f"Precision média: {mean_precision}")
 print(f"Recall médio: {mean_recall}")
 print(f"F1-score médio: {mean_f1}")
+
+metrics_path = os.path.join(os.getcwd(), 'metrics.txt')
+with open(metrics_path, 'w') as f:
+    for k_round, (precision, recall, f1) in enumerate(zip(precision_scores, recall_scores, f1_scores)):
+        f.write(f"K round {k_round + 1}:\n")
+        f.write(f"Precision: {precision}\n")
+        f.write(f"Recall: {recall}\n")
+        f.write(f"F1-score: {f1}\n\n")
+    f.write(f"Precision média: {mean_precision}\n")
+    f.write(f"Recall médio: {mean_recall}\n")
+    f.write(f"F1-score médio: {mean_f1}\n")
+print(f"Métricas salvas em {metrics_path}.")
+
 
 mean_autoencoder_loss = np.mean([h.history['loss'] for h in autoencoder_histories], axis=0)
 mean_autoencoder_val_loss = np.mean([h.history['val_loss'] for h in autoencoder_histories], axis=0)
@@ -179,5 +193,11 @@ plt.ylabel('Loss')
 plt.legend()
 
 plt.tight_layout()
+
+plot_path = os.path.join(os.getcwd(), 'learning_curves.png')
+plt.savefig(plot_path)
+print(f"Curvas de aprendizagem salvas em {plot_path}.")
 plt.show()
+plt.close()
 print("Curvas de aprendizagem plotadas com sucesso.")
+
