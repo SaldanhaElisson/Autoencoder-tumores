@@ -134,7 +134,21 @@ plt.title('Curva de Aprendizagem do Classificador')
 plt.xlabel('Épocas')
 plt.ylabel('Loss')
 plt.legend()
-
 plt.tight_layout()
+
+plot_path = os.path.join(os.getcwd(), 'learning_curves.png')
+plt.savefig(plot_path)
+print(f"Curvas de aprendizagem salvas em {plot_path}.")
+
+metrics_path = os.path.join(os.getcwd(), 'metrics.txt')
+with open(metrics_path, 'w') as f:
+    f.write(f"Precision: {precision}\n")
+    f.write(f"Recall: {recall}\n")
+    f.write(f"Sensitividade: {sensitividade}\n")
+    f.write(f"F-measure: {f_measure}\n")
+print(f"Métricas salvas em {metrics_path}.")
+
+
 plt.show()
+plt.close()
 print("Curvas de aprendizagem plotadas com sucesso.")
