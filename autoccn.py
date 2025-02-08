@@ -5,6 +5,7 @@ from keras.src.models import Model
 from keras.src.optimizers import Adam
 from keras.src.utils import to_categorical
 from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.model_selection import train_test_split
 import os
 
 from load_images import load_and_augment_images
@@ -12,7 +13,16 @@ from load_images import load_and_augment_images
 print("Carregando e aumentando as imagens...")
 base_path = os.path.join(os.getcwd(), 'data_base')
 x_train, y_train, x_test, y_test = load_and_augment_images(base_path)
+
 print("Imagens carregadas e aumentadas com sucesso.")
+
+x_combined = np.concatenate((x_train, x_test), axis=0)
+y_combined = np.concatenate((y_train, y_test), axis=0)
+
+x_train, x_test, y_train, y_test = train_test_split(x_combined, y_combined, test_size=0.1, random_state=42)
+print("Dados combinados e separados de forma aleatória com sucesso.")
+print(x_train.shape, y_train.shape)
+print(x_test.shape, y_test.shape)
 
 print("Normalizando as imagens...")
 x_train = x_train.astype('float32') / 255.0
