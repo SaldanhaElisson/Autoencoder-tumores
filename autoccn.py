@@ -94,9 +94,9 @@ print("Modelo do classificador construído e compilado com sucesso.")
 x_combined = np.concatenate((x_train, x_test), axis=0)
 y_combined = np.concatenate((y_train, y_test), axis=0)
 
-k = 3
+k = 5
 kf = KFold(n_splits=k, shuffle=True, random_state=42)
-epochas_in = 10
+epochas_in = 100
 batch_size_in = 16
 
 precision_scores = []
