@@ -1,4 +1,64 @@
-🧠 Brain Tumor Detection Using CNN
+🧠 Brain Tumor Detection Using CNN [English version 🇺🇸]
+
+🌍 Overview
+
+This project aims to detect brain tumors using Convolutional Neural Networks (CNNs). The dataset consists of medical images, and the model is trained to efficiently classify different types of tumors.
+
+📊 Dataset
+
+Total Samples: 9792
+
+Training Data: 90% (8812 images)
+
+Test Data: 10% (980 images)
+
+Image Type: Medical MRI scans
+
+⚙️ Methodology
+
+The methodology consists of three main phases: data preprocessing, model selection, and training & evaluation. During preprocessing, images are resized, normalized, and augmented when necessary to improve model generalization. The chosen architecture is a 2D CNN with multiple convolutional layers, followed by fully connected layers to classify images into different tumor types. The model is trained using the Adam optimizer, and performance is evaluated through metrics such as accuracy, precision, recall, and F1-score.
+
+🏗️ Architecture of 2D CNN
+
+The model receives grayscale images of 80x80 as input. It is structured into eight convolutional layers: the first two use 64 filters, the next two use 32 filters, followed by two layers with 16 filters, and the last two with 8 filters. Each convolutional layer employs a 2x2 kernel, and pooling layers are strategically inserted after some convolutional layers. To enhance feature extraction and reduce overfitting, batch normalization is applied throughout the architecture, and a dropout rate of 0.1 is set after pooling and dense layers. The network culminates in a fully connected layer with 1024 neurons, followed by a softmax layer that classifies images into four categories. The model is trained using the Adam optimizer, with different learning rates tested (0.01, 0.001, and 0.0001), and the loss function used is categorical cross-entropy. Training occurs over 100 epochs with a batch size of 16.
+
+📈 Model Training
+
+🛠️ Optimizer: Adam
+
+🎯 Loss Function: Categorical Cross-Entropy
+
+⏳ Training Time per Epoch: ~7s
+
+🧮 Total Trainable Parameters: 243,924
+
+💻 Hardware Used: NVIDIA RTX 4060
+
+🏆 Results
+
+📊 Accuracy: The model achieved high classification accuracy
+
+📉 Loss Reduction: Training loss consistently decreased over epochs
+
+🏗️ Autoencoder Architecture
+
+The Autoencoder was implemented for preprocessing and feature extraction before the CNN model. It consists of encoder-decoder convolutional layers, with a compressed code layer for efficient representation. Training was performed using the Adam optimizer and the MSE (Mean Squared Error) loss function, ensuring that reconstructed images closely matched the originals.
+
+💻 Hardware Used: NVIDIA RTX 3060
+
+👨‍💻 Contributors
+
+João Pedro Lima
+
+Elisson Saldanha
+
+📜 License
+
+MIT License
+
+
+🧠 Brain Tumor Detection Using CNN [Portuguese version 🇧🇷]
+
 
 🌍 Overview
 
