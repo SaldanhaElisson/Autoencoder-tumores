@@ -6,13 +6,13 @@ Este projeto tem como objetivo detectar tumores cerebrais usando Redes Neurais C
 
 📊 Dataset
 
-Total de Amostras: 9792
+- Total de Amostras: 9792
 
-Dados de Treinamento: 90% (8812 imagens)
+- Dados de Treinamento: 90% (8812 imagens)
 
-Dados de Teste: 10% (980 imagens)
+- Dados de Teste: 10% (980 imagens)
 
-Tipo de Imagem: Scans de ressonância magnética (MRI) médicas
+- Tipo de Imagem: Scans de ressonância magnética (MRI) médicas
 
 ⚙️ Methodology
 
@@ -48,9 +48,8 @@ O Autoencoder foi implementado para pré-processamento e extração de caracter�
 
 👨‍💻 Contributors
 
-Your Name
+- [João Pedro Lima](https://github.com/JpLimags)  
+- [Elisson Saldanha](https://github.com/SaldanhaElisson)
 
-📜 License
 
-MIT License
 
