@@ -52,6 +52,7 @@ Training was performed using the **Adam optimizer** and the **MSE (Mean Squared 
 👨‍💻 **Contributors**  
 - [João Pedro Lima](https://github.com/joaopedrolima)  
 - [Elisson Saldanha](https://github.com/elissonsaldanha)  
+- [Antonio Vasconcelos](https://github.com/antonioovasc)
 
 ---
 
@@ -108,5 +109,6 @@ O treinamento foi realizado utilizando o **otimizador Adam** e a função de per
 
 👨‍💻 **Contribuidores**  
 - [João Pedro Lima](https://github.com/joaopedrolima)  
-- [Elisson Saldanha](https://github.com/elissonsaldanha)  
+- [Elisson Saldanha](https://github.com/elissonsaldanha)
+- [Antonio Vasconcelos](https://github.com/antonioovasc)
 
