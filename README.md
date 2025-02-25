@@ -53,9 +53,6 @@ Training was performed using the **Adam optimizer** and the **MSE (Mean Squared 
 - [João Pedro Lima](https://github.com/joaopedrolima)  
 - [Elisson Saldanha](https://github.com/elissonsaldanha)  
 
-📜 **License**  
-MIT License  
-
 ---
 
 # 🧠 Brain Tumor Detection Using CNN [Portuguese version 🇧🇷]
@@ -113,5 +110,3 @@ O treinamento foi realizado utilizando o **otimizador Adam** e a função de per
 - [João Pedro Lima](https://github.com/joaopedrolima)  
 - [Elisson Saldanha](https://github.com/elissonsaldanha)  
 
-📜 **Licença**  
-MIT License  
